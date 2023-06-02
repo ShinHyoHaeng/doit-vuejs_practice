@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <title>이벤트 버스 구현하기</title>
+</head>
+
+<body>
+    <div id="app">
+       <child-component></child-component>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <script>
+
+        // 1. 이벤트 버스 
+        // 이벤트 버스로 활용할 새 인스턴스 1개 생성 -> eventBus라는 변수에 참조
+        var eventBus = new Vue();
+        
+        // 2. 하위 컴포넌트 속성 정의
+        Vue.component('child-component',{
+          template: '<div>하위 컴포넌트 영역 <button v-on:click="showLog">show</button></div>',
+          methods: {
+            showLog: function(){
+                // eventBus.$emit() 선언: 이벤트를 수신하는 쪽에 인자 값으로 '100'이라는 숫자도 함께 전달
+                eventBus.$emit('triggerEventBus', 100);
+            }
+          }
+        })
+
+        var app = new Vue({
+            el: '#app',
+            // 3. 상위 컴포넌트 created 라이프 사이클 훅에 eventBus.$on 선언(이벤트 받는 로직)
+            // 이벤트 발생 시 전달된 인자값 출력
+            created: function (){
+                eventBus.$on('triggerEventBus', function(value) {
+                    console.log("이벤트 수신. 전달받은 값: ", value)
+                })
+            }
+        });
+
+    </script>
+</body>
+
+</html>
